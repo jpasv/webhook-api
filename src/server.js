@@ -7,6 +7,7 @@ const server = http.createServer(app)
 const io = socketIo(server)
 
 app.use(express.json())
+app.use(cors())
 
 let dataReceived = []
 
@@ -29,4 +30,6 @@ app.all('/data', (req, res) => {
     res.status(200).json(dataReceived)
 })
 
-module.exports = server
+app.listen(3000, () => {
+    console.log('Servidor rodando na porta 3000')
+})
