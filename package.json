@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "start:pm2": "pm2 start src/server.js --name webhook-api"
   },
   "dependencies": {
     "@vercel/node": "^3.0.7",
