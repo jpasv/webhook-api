@@ -7,12 +7,20 @@ const cors = require('cors');
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(err.stack);
+    res.status(400).send('Error: ' + err.message);
+    return;
+  }
+  next();
+});
 
 let dataReceived = [];
 
-// WebSocket logic
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
 
@@ -24,18 +32,15 @@ io.on('connection', (socket) => {
     });
 });
 
-// HTTP endpoints
 app.all('/webhook', (req, res) => {
     if (!req.body) {
-        return res.status(400).send('Corpo da requisição vazio');
+      console.log('400 Error: Corpo da requisição vazio');
+      return res.status(400).send('Corpo da requisição vazio');
     }
     dataReceived.push(req.body);
-    
-    // Envia dados para todos os clientes conectados via WebSocket
-    io.sockets.emit('newData', req.body);
-    
+    io.sockets.emit('dataReceived', req.body);
     res.status(200).send('Dados recebidos!');
-});
+  });
 
 app.all('/data', (req, res) => {
     res.status(200).json(dataReceived);
