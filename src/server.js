@@ -11,12 +11,12 @@ const io = socketIo(server);
 app.use(cors());
 app.use(express.json());
 
+let order = {};
+
 app.all('/webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => {
 	if (req.method !== 'POST') {
 		return res.status(200).send({ status: 'ok' });
 	}
-
-	let order = {};
 	try {
 		order = JSON.parse(req.body);
 	} catch (error) {
@@ -29,7 +29,7 @@ app.all('/webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => 
 });
 
 app.get('/data', async (req, res) => {
-    res.status(200).json(dataReceived);
+    res.status(200).json(order);
 });
 
 // Iniciar o servidor
