@@ -1,38 +1,24 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
-const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const server = http.createServer(app);
-const io = socketIo(server);
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
 let order = {};
 
-app.all('/webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => {
-	if (req.method !== 'POST') {
-		return res.status(200).send({ status: 'ok' });
-	}
-	try {
-		order = JSON.parse(req.body);
-	} catch (error) {
-		return res.status(400).send({ error });
-	}
-
-	console.log('Received order:', order);
-
-	return res.status(200).send({ status: 'ok' });
-});
+app.post('/webhook', async (req, res) => {
+    order = req.body;
+    res.status(200).json({ message: 'ok' })
+})
 
 app.get('/data', async (req, res) => {
     res.status(200).json(order);
 });
 
-// Iniciar o servidor
-server.listen(3000, () => {
+app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
 });
