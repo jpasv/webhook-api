@@ -21,24 +21,14 @@ app.use((err, req, res, next) => {
 
 let dataReceived = [];
 
-io.on('connection', (socket) => {
-    console.log('Novo cliente conectado');
 
-    // Quando um novo cliente se conecta, envia todos os dados já recebidos
-    socket.emit('initialData', dataReceived);
-
-    socket.on('disconnect', () => {
-        console.log('Cliente desconectado');
-    });
-});
-
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
+    console.log(req.body);
     dataReceived.push(req.body);
-    io.sockets.emit('dataReceived', req.body);
     res.status(200).send('Dados recebidos!');
   });
 
-app.get('/data', (req, res) => {
+app.get('/data', async (req, res) => {
     res.status(200).json(dataReceived);
 });
 
