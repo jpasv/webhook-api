@@ -1,16 +1,21 @@
 const express = require('express');
 const http = require('http');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 
 let order = {};
 
-app.post('/webhook', async (req, res) => {
+app.all('/webhook', async (req, res) => {
+    console.log('Cabeçalhos:', req.headers);
+    console.log('Corpo:', req.body);
+
+    if (!req.body) {
+        console.log('400 Error: Corpo da requisição vazio');
+        return res.status(400).send('Corpo da requisição vazio');
+    }
+    
     order = req.body;
     res.status(200).json({ message: 'ok' })
 })
