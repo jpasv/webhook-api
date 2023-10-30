@@ -19,7 +19,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-let dataReceived = {};
+let dataReceived = [];
 
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
@@ -32,17 +32,13 @@ io.on('connection', (socket) => {
     });
 });
 
-app.all('/webhook', (req, res) => {
-    if (!req.body) {
-      console.log('400 Error: Corpo da requisição vazio');
-      return res.status(400).send('Corpo da requisição vazio');
-    }
+app.post('/webhook', (req, res) => {
     dataReceived.push(req.body);
     io.sockets.emit('dataReceived', req.body);
     res.status(200).send('Dados recebidos!');
   });
 
-app.all('/data', (req, res) => {
+app.get('/data', (req, res) => {
     res.status(200).json(dataReceived);
 });
 
