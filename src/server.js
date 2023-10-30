@@ -19,7 +19,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-let dataReceived = [];
+let dataReceived = [{}];
 
 io.on('connection', (socket) => {
     console.log('Novo cliente conectado');
